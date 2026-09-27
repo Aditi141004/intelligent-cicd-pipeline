@@ -16,34 +16,34 @@ pipeline {
 
         stage('Verify Python') {
             steps {
-                sh 'python3 --version'
-                sh 'python3 -m pip --version'
+                bat 'python --version'
+                bat 'python -m pip --version'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh '''
-                    python3 -m venv .venv
-                    .venv/bin/python -m pip install --upgrade pip
-                    .venv/bin/python -m pip install -r requirements.txt
+                bat '''
+                    python -m venv .venv
+                    .venv\\Scripts\\python.exe -m pip install --upgrade pip
+                    .venv\\Scripts\\python.exe -m pip install -r requirements.txt
                 '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh '.venv/bin/python -m pytest --junitxml=test-results.xml'
+                bat '.venv\\Scripts\\python.exe -m pytest --junitxml=test-results.xml'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh '''
+                bat '''
                     docker build -t intelligent-cicd-flask . > build.log 2>&1
-                    build_status=$?
-                    cat build.log
-                    exit $build_status
+                    set "BUILD_STATUS=%ERRORLEVEL%"
+                    type build.log
+                    exit /b %BUILD_STATUS%
                 '''
             }
         }
