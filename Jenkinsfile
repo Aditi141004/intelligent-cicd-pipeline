@@ -47,13 +47,12 @@ pipeline {
                 '''
             }
         }
-    }
         stage('Generate Build Report') {
             steps {
                 bat 'echo Build Successful > build-report.txt'
             }
         }
-
+    }
     post {
         always {
             archiveArtifacts artifacts: 'build-report.txt', fingerprint: true
